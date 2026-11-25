@@ -1,12 +1,13 @@
 # Air Squats for Stream Deck
 
-Reminds you to do 10 air squats at least once an hour.
+Reminds you to do air squats (10 by default, configurable from 1 to 999) at least once an hour.
 
 - At the configured minute past each hour (default `0`, on the hour) a beep plays and the key flashes red/white.
 - The beep repeats every 30 seconds until you respond.
 - **Press** the key to acknowledge. The next reminder is the following hourly slot.
 - **Hold** the key for 0.7 seconds to snooze. This adds 5 minutes: an active reminder is silenced and returns in 5 minutes, and holding while idle pushes the next reminder back 5 minutes. Each hold adds another 5.
 - **Press** the key when no reminder is due to preview how it looks and sounds (4 seconds, schedule unchanged).
+- Set how many air squats to do in the **Air squats** field; the flashing key shows that number. Leave it blank for 10.
 - Configure the minute past the hour (0-59; the panel shows the actual times, e.g. "15 min past the hour: 10:15, 11:15, 12:15...") and an optional custom alert sound in the key's property inspector. Leave the sound empty (or click **Use default sound**) for the built-in beep. Custom sounds play for at most 10 seconds; WAV, MP3, M4A and similar are supported on Windows, and whatever `afplay` supports on macOS.
 
 ## Requirements

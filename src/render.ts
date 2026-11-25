@@ -29,15 +29,18 @@ export const idleImage = (nextTime: string) =>
 	]);
 
 /** Reminder is active; `on` toggles to produce the flash. */
-export const alertImage = (on: boolean) =>
-	on
+export const alertImage = (on: boolean, count: number) => {
+	const line1 = `${count} AIR`;
+	const line2 = count === 1 ? "SQUAT!" : "SQUATS!";
+	return on
 		? key("#e11d2e", [
-				{ text: "10 AIR", size: 17, y: 78 },
-				{ text: "SQUATS!", size: 17, y: 96 },
+				{ text: line1, size: 17, y: 78 },
+				{ text: line2, size: 17, y: 96 },
 			])
 		: toDataUrl(
-				`<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><text x="50" y="48" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="19" fill="#e11d2e" text-anchor="middle">10 AIR</text><text x="50" y="72" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="19" fill="#e11d2e" text-anchor="middle">SQUATS!</text></svg>`,
+				`<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffffff"/><text x="50" y="48" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="19" fill="#e11d2e" text-anchor="middle">${line1}</text><text x="50" y="72" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="19" fill="#e11d2e" text-anchor="middle">${line2}</text></svg>`,
 			);
+};
 
 /** Short feedback message (acknowledged, snoozed). */
 export const messageImage = (bg: string, line1: string, line2: string) =>

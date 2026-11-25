@@ -10,12 +10,14 @@ import streamDeck, {
 } from "@elgato/streamdeck";
 
 import { alertImage, idleImage, messageImage } from "../render";
-import { formatTime, nextHourlySlot, parseMinute } from "../schedule";
+import { formatTime, nextHourlySlot, parseCount, parseMinute } from "../schedule";
 import { playAlert } from "../sound";
 
 type Settings = {
 	/** Minute past the hour to remind at (0-59). Defaults to 0 (on the hour). */
 	minute?: number | string;
+	/** Number of air squats to do each time (1-999). Defaults to 10. */
+	count?: number | string;
 	/** Optional custom alert sound (path from the file picker). Empty means the bundled default. */
 	soundFile?: string;
 };
@@ -30,6 +32,7 @@ const PREVIEW_MS = 4000; // how long a single press previews the reminder
 type Instance = {
 	key: KeyAction<Settings> | undefined;
 	minute: number;
+	count: number;
 	soundFile?: string;
 	/** While set and in the future, the key shows (and sounds) the reminder as a demo. */
 	previewUntil?: number;
@@ -58,6 +61,7 @@ export class AirSquats extends SingletonAction<Settings> {
 			inst = {
 				key: ev.action,
 				minute,
+				count: parseCount(ev.payload.settings.count),
 				soundFile: ev.payload.settings.soundFile,
 				nextDue: nextHourlySlot(new Date(), minute),
 				alerting: false,
@@ -68,6 +72,7 @@ export class AirSquats extends SingletonAction<Settings> {
 			this.instances.set(ev.action.id, inst);
 		} else {
 			inst.key = ev.action;
+			inst.count = parseCount(ev.payload.settings.count);
 			inst.soundFile = ev.payload.settings.soundFile;
 			inst.lastImage = undefined;
 			if (inst.minute !== minute) this.reschedule(inst, minute);
@@ -94,6 +99,8 @@ export class AirSquats extends SingletonAction<Settings> {
 		const inst = this.instances.get(ev.action.id);
 		if (!inst) return;
 		inst.soundFile = ev.payload.settings.soundFile;
+		inst.count = parseCount(ev.payload.settings.count);
+		inst.lastImage = undefined; // redraw so a changed count shows straight away
 		const minute = parseMinute(ev.payload.settings.minute);
 		if (minute !== inst.minute) {
 			this.reschedule(inst, minute);
@@ -178,10 +185,10 @@ export class AirSquats extends SingletonAction<Settings> {
 				playAlert(inst.soundFile);
 			}
 			inst.flashOn = !inst.flashOn;
-			image = alertImage(inst.flashOn);
+			image = alertImage(inst.flashOn, inst.count);
 		} else if (inst.previewUntil && now < inst.previewUntil) {
 			inst.flashOn = !inst.flashOn;
-			image = alertImage(inst.flashOn);
+			image = alertImage(inst.flashOn, inst.count);
 		} else if (inst.toast && now < inst.toast.until) {
 			image = inst.toast.image;
 		} else {

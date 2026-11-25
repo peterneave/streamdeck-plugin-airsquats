@@ -6,7 +6,7 @@
 	"Author": "peterneave",
 	"Category": "Air Squats",
 	"CategoryIcon": "imgs/category/icon",
-	"Description": "Reminds you to do 10 air squats every hour with a beep and a flashing key.",
+	"Description": "Reminds you to do air squats every hour (10 by default) with a beep and a flashing key.",
 	"Icon": "imgs/plugin/icon",
 	"CodePath": "bin/plugin.js",
 	"SDKVersion": 3,
@@ -31,7 +31,7 @@
 			"Name": "Air Squats",
 			"UUID": "com.peterneave.streamdeck-plugin-airsquats.action",
 			"Icon": "imgs/actions/squats/icon",
-			"Tooltip": "Hourly reminder to do 10 air squats. Press to acknowledge, hold to snooze 5 minutes.",
+			"Tooltip": "Hourly reminder to do air squats (10 by default). Press to acknowledge, hold to snooze 5 minutes.",
 			"Controllers": [
 				"Keypad"
 			],
