@@ -14,6 +14,9 @@
 		<sdpi-item label="Air squats">
 			<sdpi-textfield setting="count" placeholder="10" maxlength="3" pattern="[0-9]*"></sdpi-textfield>
 		</sdpi-item>
+		<sdpi-item label="Sound">
+			<sdpi-checkbox setting="soundEnabled" label="Play alert sound" default="true"></sdpi-checkbox>
+		</sdpi-item>
 		<sdpi-item label="Alert sound">
 			<sdpi-file setting="soundFile" accept=".wav,.mp3,.m4a,.aac,.wma,.aif,.aiff"></sdpi-file>
 		</sdpi-item>
@@ -29,6 +32,7 @@
 					Press the key to acknowledge. Hold it for 0.7 seconds to add 5 minutes.
 				</p>
 				<p>
+					Untick Play alert sound to mute reminders; the key still flashes.
 					Press the key when no reminder is due to preview how it looks and sounds. Custom sounds
 					play for up to 10 seconds. WAV works everywhere; MP3, M4A and others work too. If the file
 					goes missing, the default sound is used.

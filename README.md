@@ -8,6 +8,7 @@ Reminds you to do air squats (10 by default, configurable from 1 to 999) at leas
 - **Hold** the key for 0.7 seconds to snooze. This adds 5 minutes: an active reminder is silenced and returns in 5 minutes, and holding while idle pushes the next reminder back 5 minutes. Each hold adds another 5.
 - **Press** the key when no reminder is due to preview how it looks and sounds (4 seconds, schedule unchanged).
 - Set how many air squats to do in the **Air squats** field; the flashing key shows that number. Leave it blank for 10.
+- Untick **Play alert sound** to mute the reminder. The key still flashes, and the preview is silent too.
 - Configure the minute past the hour (0-59; the panel shows the actual times, e.g. "15 min past the hour: 10:15, 11:15, 12:15...") and an optional custom alert sound in the key's property inspector. Leave the sound empty (or click **Use default sound**) for the built-in beep. Custom sounds play for at most 10 seconds; WAV, MP3, M4A and similar are supported on Windows, and whatever `afplay` supports on macOS.
 
 ## Requirements

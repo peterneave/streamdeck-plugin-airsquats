@@ -20,6 +20,8 @@ type Settings = {
 	count?: number | string;
 	/** Optional custom alert sound (path from the file picker). Empty means the bundled default. */
 	soundFile?: string;
+	/** Play the alert sound. Defaults to true; only an explicit false mutes it. */
+	soundEnabled?: boolean;
 };
 
 const TICK_MS = 500; // flash rate and scheduler resolution
@@ -34,6 +36,7 @@ type Instance = {
 	minute: number;
 	count: number;
 	soundFile?: string;
+	soundEnabled: boolean;
 	/** While set and in the future, the key shows (and sounds) the reminder as a demo. */
 	previewUntil?: number;
 	nextDue: Date;
@@ -63,6 +66,7 @@ export class AirSquats extends SingletonAction<Settings> {
 				minute,
 				count: parseCount(ev.payload.settings.count),
 				soundFile: ev.payload.settings.soundFile,
+				soundEnabled: ev.payload.settings.soundEnabled !== false,
 				nextDue: nextHourlySlot(new Date(), minute),
 				alerting: false,
 				flashOn: true,
@@ -74,6 +78,7 @@ export class AirSquats extends SingletonAction<Settings> {
 			inst.key = ev.action;
 			inst.count = parseCount(ev.payload.settings.count);
 			inst.soundFile = ev.payload.settings.soundFile;
+			inst.soundEnabled = ev.payload.settings.soundEnabled !== false;
 			inst.lastImage = undefined;
 			if (inst.minute !== minute) this.reschedule(inst, minute);
 		}
@@ -99,6 +104,7 @@ export class AirSquats extends SingletonAction<Settings> {
 		const inst = this.instances.get(ev.action.id);
 		if (!inst) return;
 		inst.soundFile = ev.payload.settings.soundFile;
+		inst.soundEnabled = ev.payload.settings.soundEnabled !== false;
 		inst.count = parseCount(ev.payload.settings.count);
 		inst.lastImage = undefined; // redraw so a changed count shows straight away
 		const minute = parseMinute(ev.payload.settings.minute);
@@ -138,7 +144,7 @@ export class AirSquats extends SingletonAction<Settings> {
 			inst.previewUntil = Date.now() + PREVIEW_MS;
 			inst.flashOn = true;
 			inst.toast = undefined;
-			playAlert(inst.soundFile);
+			this.beep(inst);
 		}
 		this.tick(inst);
 	}
@@ -163,6 +169,11 @@ export class AirSquats extends SingletonAction<Settings> {
 		inst.nextDue = nextHourlySlot(new Date(), minute);
 	}
 
+	/** Play the alert sound unless the user has turned it off. The key still flashes either way. */
+	private beep(inst: Instance): void {
+		if (inst.soundEnabled) playAlert(inst.soundFile);
+	}
+
 	private showToast(inst: Instance, image: string): void {
 		inst.toast = { image, until: Date.now() + TOAST_MS };
 	}
@@ -182,7 +193,7 @@ export class AirSquats extends SingletonAction<Settings> {
 		if (inst.alerting) {
 			if (now - inst.lastBeep >= REBEEP_MS) {
 				inst.lastBeep = now;
-				playAlert(inst.soundFile);
+				this.beep(inst);
 			}
 			inst.flashOn = !inst.flashOn;
 			image = alertImage(inst.flashOn, inst.count);
