@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "assets": "node scripts/generate-assets.mjs",
+    "marketplace": "node scripts/generate-marketplace.mjs",
     "build": "rollup -c",
     "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.peterneave.streamdeck-plugin-airsquats\"",
     "pack": "npm run build && streamdeck pack --force --output dist com.peterneave.streamdeck-plugin-airsquats.sdPlugin",
