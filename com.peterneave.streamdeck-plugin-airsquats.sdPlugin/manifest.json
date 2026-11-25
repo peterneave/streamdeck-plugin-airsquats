@@ -1,0 +1,50 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"UUID": "com.peterneave.streamdeck-plugin-airsquats",
+	"Name": "Air Squats",
+	"Version": "0.1.0.0",
+	"Author": "peterneave",
+	"Category": "Air Squats",
+	"CategoryIcon": "imgs/category/icon",
+	"Description": "Reminds you to do 10 air squats every hour with a beep and a flashing key.",
+	"Icon": "imgs/plugin/icon",
+	"CodePath": "bin/plugin.js",
+	"SDKVersion": 3,
+	"Nodejs": {
+		"Version": "20"
+	},
+	"Software": {
+		"MinimumVersion": "6.9"
+	},
+	"OS": [
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		},
+		{
+			"Platform": "mac",
+			"MinimumVersion": "13"
+		}
+	],
+	"Actions": [
+		{
+			"Name": "Air Squats",
+			"UUID": "com.peterneave.streamdeck-plugin-airsquats.action",
+			"Icon": "imgs/actions/squats/icon",
+			"Tooltip": "Hourly reminder to do 10 air squats. Press to acknowledge, hold to snooze 5 minutes.",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/squats.html",
+			"UserTitleEnabled": false,
+			"SupportedInMultiActions": false,
+			"States": [
+				{
+					"Image": "imgs/actions/squats/key",
+					"TitleAlignment": "bottom",
+					"ShowTitle": false
+				}
+			]
+		}
+	]
+}

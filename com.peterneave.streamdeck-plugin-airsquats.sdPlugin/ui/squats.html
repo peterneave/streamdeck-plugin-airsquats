@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<meta charset="utf-8" />
+		<script src="sdpi-components.js"></script>
+	</head>
+	<body>
+		<sdpi-item label="Remind at minute">
+			<sdpi-range setting="minute" min="0" max="59" step="1" default="0" showlabels></sdpi-range>
+		</sdpi-item>
+		<sdpi-item>
+			<details>
+				<summary>How it works</summary>
+				<p>
+					A beep sounds and the key flashes at this many minutes past every hour (0 = on the hour).
+					Press the key to acknowledge. Hold it for 0.7 seconds to add 5 minutes.
+				</p>
+			</details>
+		</sdpi-item>
+	</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "name": "streamdeck-plugin-airsquats",
+  "version": "0.1.0",
+  "description": "Stream Deck plugin that reminds you to do 10 air squats every hour.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/generate-assets.mjs",
+    "build": "rollup -c",
+    "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.peterneave.streamdeck-plugin-airsquats\"",
+    "pack": "npm run build && streamdeck pack --force --output dist com.peterneave.streamdeck-plugin-airsquats.sdPlugin",
+    "link": "npm run build && streamdeck link com.peterneave.streamdeck-plugin-airsquats.sdPlugin",
+    "unlink": "streamdeck unlink com.peterneave.streamdeck-plugin-airsquats"
+  },
+  "dependencies": {
+    "@elgato/streamdeck": "^3.0.6"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.10.5",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.1",
+    "@types/node": "^20.19.0",
+    "rollup": "^4.68.8",
+    "tslib": "^2.9.1",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20.5.0 <21"
+  }
+}

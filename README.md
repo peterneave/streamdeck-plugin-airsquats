@@ -1,0 +1,31 @@
+# Air Squats for Stream Deck
+
+Reminds you to do 10 air squats at least once an hour.
+
+- At the configured minute past each hour (default `0`, on the hour) a beep plays and the key flashes red/white.
+- The beep repeats every 30 seconds until you respond.
+- **Press** the key to acknowledge. The next reminder is the following hourly slot.
+- **Hold** the key for 0.7 seconds to snooze. This adds 5 minutes: an active reminder is silenced and returns in 5 minutes, and holding while idle pushes the next reminder back 5 minutes. Each hold adds another 5.
+- Configure the minute (0-59) in the key's property inspector.
+
+## Requirements
+
+Stream Deck app 6.9 or later, Windows 10+ or macOS 13+. Sound uses PowerShell's `SoundPlayer` on Windows and `afplay` on macOS. Building needs Node.js 20.5+ (pinned to 20.19.5 in the dev container).
+
+## Build and install
+
+```sh
+npm install
+npm run assets     # only needed if you change scripts/generate-assets.mjs
+npm run link       # builds, then links the plugin into Stream Deck (one-off)
+```
+
+Then drag **Air Squats > Air Squats** onto a key. For development, `npm run watch` rebuilds and restarts the plugin on save. `npm run unlink` removes the link. `npm run pack` builds and writes a distributable `.streamDeckPlugin` to `dist/`.
+
+The dev container (`.devcontainer/`) is for editing and building only. It cannot link to or restart the Stream Deck app or play sound, so run `link`, `watch` and `pack` outputs on the host machine.
+
+## Layout
+
+- `src/actions/air-squats.ts`: the action (scheduling, flashing, press/hold handling)
+- `src/schedule.ts`, `src/render.ts`, `src/sound.ts`: time maths, key images (SVG), audio
+- `com.peterneave.streamdeck-plugin-airsquats.sdPlugin/`: manifest, property inspector (`ui/`), icons and `sounds/alert.wav`

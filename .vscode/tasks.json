@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "pack",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "label": "Build Pack",
+      "detail": "Pack the plugin for distribution"
+    },
+    {
+      "type": "npm",
+      "script": "link",
+      "problemMatcher": [],
+      "label": "Link",
+      "detail": "Build and link the plugin for local Stream Deck development"
+    },
+    {
+      "type": "npm",
+      "script": "unlink",
+      "problemMatcher": [],
+      "label": "Unlink",
+      "detail": "Unlink the plugin from the local Stream Deck installation"
+    },
+    {
+      "type": "npm",
+      "script": "watch",
+      "isBackground": true,
+      "problemMatcher": [],
+      "label": "Watch",
+      "detail": "Rebuild and restart the plugin on save"
+    }
+  ]
+}
