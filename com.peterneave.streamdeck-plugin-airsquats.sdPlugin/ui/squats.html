@@ -5,8 +5,17 @@
 		<script src="sdpi-components.js"></script>
 	</head>
 	<body>
-		<sdpi-item label="Remind at minute">
-			<sdpi-range setting="minute" min="0" max="59" step="1" default="0" showlabels></sdpi-range>
+		<sdpi-item label="Minutes past">
+			<sdpi-range id="minute" setting="minute" min="0" max="59" step="1" default="0" showlabels></sdpi-range>
+		</sdpi-item>
+		<sdpi-item label="Reminds at">
+			<div id="minute-readout" style="padding: 4px 0; font-weight: bold">&nbsp;</div>
+		</sdpi-item>
+		<sdpi-item label="Alert sound">
+			<sdpi-file setting="soundFile" accept=".wav,.mp3,.m4a,.aac,.wma,.aif,.aiff"></sdpi-file>
+		</sdpi-item>
+		<sdpi-item>
+			<sdpi-button id="reset-sound">Use default sound</sdpi-button>
 		</sdpi-item>
 		<sdpi-item>
 			<details>
@@ -15,7 +24,38 @@
 					A beep sounds and the key flashes at this many minutes past every hour (0 = on the hour).
 					Press the key to acknowledge. Hold it for 0.7 seconds to add 5 minutes.
 				</p>
+				<p>
+					Press the key when no reminder is due to preview how it looks and sounds. Custom sounds
+					play for up to 10 seconds. WAV works everywhere; MP3, M4A and others work too. If the file
+					goes missing, the default sound is used.
+				</p>
 			</details>
 		</sdpi-item>
+		<script>
+			const pad = (n) => String(n).padStart(2, "0");
+
+			// Spell out the real times, e.g. "10:15, 11:15, 12:15 ... every hour".
+			function showMinute(value) {
+				const raw = Number.parseInt(value, 10);
+				const minute = Number.isInteger(raw) && raw >= 0 && raw <= 59 ? raw : 0;
+				const hour = new Date().getHours();
+				const times = [1, 2, 3].map((i) => `${pad((hour + i) % 24)}:${pad(minute)}`);
+				const lead = minute === 0 ? "On the hour" : `${minute} min past the hour`;
+				document.getElementById("minute-readout").textContent = `${lead}: ${times.join(", ")}...`;
+			}
+
+			const range = document.getElementById("minute");
+			range.addEventListener("valuechange", () => showMinute(range.value));
+			showMinute(0);
+
+			const { streamDeckClient } = SDPIComponents;
+			streamDeckClient.getSettings().then((s) => showMinute(s.settings?.minute));
+			streamDeckClient.didReceiveSettings?.subscribe?.((ev) => showMinute(ev.payload?.settings?.minute));
+
+			document.getElementById("reset-sound").addEventListener("click", async () => {
+				const { settings } = await streamDeckClient.getSettings();
+				await streamDeckClient.setSettings({ ...settings, soundFile: "" });
+			});
+		</script>
 	</body>
 </html>

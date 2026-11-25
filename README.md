@@ -6,11 +6,12 @@ Reminds you to do 10 air squats at least once an hour.
 - The beep repeats every 30 seconds until you respond.
 - **Press** the key to acknowledge. The next reminder is the following hourly slot.
 - **Hold** the key for 0.7 seconds to snooze. This adds 5 minutes: an active reminder is silenced and returns in 5 minutes, and holding while idle pushes the next reminder back 5 minutes. Each hold adds another 5.
-- Configure the minute (0-59) in the key's property inspector.
+- **Press** the key when no reminder is due to preview how it looks and sounds (4 seconds, schedule unchanged).
+- Configure the minute past the hour (0-59; the panel shows the actual times, e.g. "15 min past the hour: 10:15, 11:15, 12:15...") and an optional custom alert sound in the key's property inspector. Leave the sound empty (or click **Use default sound**) for the built-in beep. Custom sounds play for at most 10 seconds; WAV, MP3, M4A and similar are supported on Windows, and whatever `afplay` supports on macOS.
 
 ## Requirements
 
-Stream Deck app 6.9 or later, Windows 10+ or macOS 13+. Sound uses PowerShell's `SoundPlayer` on Windows and `afplay` on macOS. Building needs Node.js 20.5+ (pinned to 20.19.5 in the dev container).
+Stream Deck app 7.1 or later, Windows 10+ or macOS 13+. Sound uses PowerShell's `SoundPlayer` on Windows and `afplay` on macOS. Building needs Node.js 24 (the version the Elgato docs recommend). `.nvmrc` and the dev container pin 24.22.3. With nvm, run `nvm install 24` and `nvm use 24` (nvm-windows ignores `.nvmrc`, so name the version). The plugin also runs on Stream Deck's Node 24 runtime.
 
 ## Build and install
 

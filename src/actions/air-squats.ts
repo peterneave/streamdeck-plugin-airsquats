@@ -16,6 +16,8 @@ import { playAlert } from "../sound";
 type Settings = {
 	/** Minute past the hour to remind at (0-59). Defaults to 0 (on the hour). */
 	minute?: number | string;
+	/** Optional custom alert sound (path from the file picker). Empty means the bundled default. */
+	soundFile?: string;
 };
 
 const TICK_MS = 500; // flash rate and scheduler resolution
@@ -23,10 +25,14 @@ const LONG_PRESS_MS = 700; // hold this long to snooze
 const SNOOZE_MS = 5 * 60 * 1000;
 const REBEEP_MS = 30 * 1000; // repeat the sound while the reminder is unacknowledged
 const TOAST_MS = 2500;
+const PREVIEW_MS = 4000; // how long a single press previews the reminder
 
 type Instance = {
 	key: KeyAction<Settings> | undefined;
 	minute: number;
+	soundFile?: string;
+	/** While set and in the future, the key shows (and sounds) the reminder as a demo. */
+	previewUntil?: number;
 	nextDue: Date;
 	alerting: boolean;
 	flashOn: boolean;
@@ -52,6 +58,7 @@ export class AirSquats extends SingletonAction<Settings> {
 			inst = {
 				key: ev.action,
 				minute,
+				soundFile: ev.payload.settings.soundFile,
 				nextDue: nextHourlySlot(new Date(), minute),
 				alerting: false,
 				flashOn: true,
@@ -61,6 +68,7 @@ export class AirSquats extends SingletonAction<Settings> {
 			this.instances.set(ev.action.id, inst);
 		} else {
 			inst.key = ev.action;
+			inst.soundFile = ev.payload.settings.soundFile;
 			inst.lastImage = undefined;
 			if (inst.minute !== minute) this.reschedule(inst, minute);
 		}
@@ -85,6 +93,7 @@ export class AirSquats extends SingletonAction<Settings> {
 	override onDidReceiveSettings(ev: DidReceiveSettingsEvent<Settings>): void {
 		const inst = this.instances.get(ev.action.id);
 		if (!inst) return;
+		inst.soundFile = ev.payload.settings.soundFile;
 		const minute = parseMinute(ev.payload.settings.minute);
 		if (minute !== inst.minute) {
 			this.reschedule(inst, minute);
@@ -114,8 +123,15 @@ export class AirSquats extends SingletonAction<Settings> {
 			inst.alerting = false;
 			inst.nextDue = nextHourlySlot(new Date(), inst.minute);
 			this.showToast(inst, messageImage("#15803d", "NICE!", `Next ${formatTime(inst.nextDue)}`));
+		} else if (inst.previewUntil && Date.now() < inst.previewUntil) {
+			// Press during a preview just ends it.
+			inst.previewUntil = undefined;
 		} else {
-			this.showToast(inst, messageImage("#0f8a7d", "NEXT", formatTime(inst.nextDue)));
+			// Not due: preview what the reminder looks and sounds like (the schedule is untouched).
+			inst.previewUntil = Date.now() + PREVIEW_MS;
+			inst.flashOn = true;
+			inst.toast = undefined;
+			playAlert(inst.soundFile);
 		}
 		this.tick(inst);
 	}
@@ -123,6 +139,7 @@ export class AirSquats extends SingletonAction<Settings> {
 	/** Long press: +5 minutes. Silences an active reminder, or pushes back a pending one. */
 	private snooze(inst: Instance): void {
 		const now = Date.now();
+		inst.previewUntil = undefined;
 		if (inst.alerting) {
 			inst.alerting = false;
 			inst.nextDue = new Date(now + SNOOZE_MS);
@@ -151,14 +168,18 @@ export class AirSquats extends SingletonAction<Settings> {
 			inst.flashOn = true;
 			inst.lastBeep = 0;
 			inst.toast = undefined;
+			inst.previewUntil = undefined; // a real reminder takes over from any preview
 		}
 
 		let image: string;
 		if (inst.alerting) {
 			if (now - inst.lastBeep >= REBEEP_MS) {
 				inst.lastBeep = now;
-				playAlert();
+				playAlert(inst.soundFile);
 			}
+			inst.flashOn = !inst.flashOn;
+			image = alertImage(inst.flashOn);
+		} else if (inst.previewUntil && now < inst.previewUntil) {
 			inst.flashOn = !inst.flashOn;
 			image = alertImage(inst.flashOn);
 		} else if (inst.toast && now < inst.toast.until) {
